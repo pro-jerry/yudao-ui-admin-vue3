@@ -214,7 +214,8 @@ const getCode = async () => {
 const getTenantId = async () => {
   if (loginData.tenantEnable === 'true') {
     const res = await LoginApi.getTenantIdByName(loginData.loginForm.tenantName)
-    authUtil.setTenantId(res)
+    authUtil.setTenantId(res.id)
+    authUtil.setTenantCode(res.code)
   }
 }
 // 记住我

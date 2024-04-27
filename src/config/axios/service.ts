@@ -9,7 +9,14 @@ import axios, {
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import qs from 'qs'
 import { config } from '@/config/axios/config'
-import { getAccessToken, getRefreshToken, getTenantId, removeToken, setToken } from '@/utils/auth'
+import {
+  getAccessToken,
+  getRefreshToken,
+  getTenantCode,
+  getTenantId,
+  removeToken,
+  setToken
+} from '@/utils/auth'
 import errorCode from './errorCode'
 
 import { resetRouter } from '@/router'
@@ -57,7 +64,10 @@ service.interceptors.request.use(
     // 设置租户
     if (tenantEnable && tenantEnable === 'true') {
       const tenantId = getTenantId()
+      const tenantCode = getTenantCode()
       if (tenantId) (config as Recordable).headers['tenant-id'] = tenantId
+      if (tenantCode) (config as Recordable).headers['tenant-code'] = tenantCode
+
     }
     const params = config.params || {}
     const data = config.data || false

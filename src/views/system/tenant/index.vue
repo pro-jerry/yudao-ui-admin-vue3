@@ -101,6 +101,7 @@
     <el-table v-loading="loading" :data="list">
       <el-table-column label="租户编号" align="center" prop="id" />
       <el-table-column label="租户名" align="center" prop="name" />
+      <el-table-column label="租户码" align="center" prop="code" />
       <el-table-column label="租户套餐" align="center" prop="packageId">
         <template #default="scope">
           <el-tag v-if="scope.row.packageId === 0" type="danger">系统租户</el-tag>

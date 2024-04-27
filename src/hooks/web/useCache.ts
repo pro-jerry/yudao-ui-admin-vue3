@@ -18,7 +18,8 @@ export const CACHE_KEY = {
   DICT_CACHE: 'dictCache',
   // 登录表单
   LoginForm: 'loginForm',
-  TenantId: 'tenantId'
+  TenantId: 'tenantId',
+  TenantCode: 'TenantCode'
 }
 
 export const useCache = (type: CacheType = 'localStorage') => {

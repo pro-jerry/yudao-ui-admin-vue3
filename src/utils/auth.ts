@@ -66,6 +66,14 @@ export const getTenantId = () => {
   return wsCache.get(CACHE_KEY.TenantId)
 }
 
+export const getTenantCode = () => {
+  return wsCache.get(CACHE_KEY.TenantCode)
+}
+
 export const setTenantId = (username: string) => {
   wsCache.set(CACHE_KEY.TenantId, username)
+}
+
+export const setTenantCode = (code: string) => {
+  wsCache.set(CACHE_KEY.TenantCode, code)
 }

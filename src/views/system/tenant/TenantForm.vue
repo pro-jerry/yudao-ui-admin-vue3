@@ -10,6 +10,9 @@
       <el-form-item label="租户名" prop="name">
         <el-input v-model="formData.name" placeholder="请输入租户名" />
       </el-form-item>
+      <el-form-item label="租户码" prop="name">
+        <el-input v-model="formData.code" placeholder="请输入租户名" />
+      </el-form-item>
       <el-form-item label="租户套餐" prop="packageId">
         <el-select v-model="formData.packageId" clearable placeholder="请选择租户套餐">
           <el-option
@@ -92,6 +95,7 @@ const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   name: undefined,
+  code: undefined,
   packageId: undefined,
   contactName: undefined,
   contactMobile: undefined,
@@ -105,6 +109,7 @@ const formData = ref({
 })
 const formRules = reactive({
   name: [{ required: true, message: '租户名不能为空', trigger: 'blur' }],
+  code: [{ required: true, message: '租户码不能为空', trigger: 'blur' }],
   packageId: [{ required: true, message: '租户套餐不能为空', trigger: 'blur' }],
   contactName: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '租户状态不能为空', trigger: 'blur' }],
@@ -167,6 +172,7 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
+    code: undefined,
     name: undefined,
     packageId: undefined,
     contactName: undefined,
