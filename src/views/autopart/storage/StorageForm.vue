@@ -33,8 +33,8 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="是否锁定" prop="lock">
-        <el-radio-group v-model="formData.lock">
+      <el-form-item label="是否锁定" prop="locked">
+        <el-radio-group v-model="formData.locked">
           <el-radio
             v-for="dict in getIntDictOptions(DICT_TYPE.AUTOPART_STORAGE_LOCKED)"
             :key="dict.value"
@@ -92,14 +92,14 @@ const formData = ref({
   address: undefined,
   sort: undefined,
   status: undefined,
-  lock: undefined,
+  locked: undefined,
   remark: undefined,
   userId: undefined,
 })
 const formRules = reactive({
   name: [{ required: true, message: '仓库名字不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '仓库状态 0=关闭 1=开启不能为空', trigger: 'blur' }],
-  lock: [{ required: true, message: '是否锁定 0=未锁定 1=已锁定不能为空', trigger: 'blur' }],
+  locked: [{ required: true, message: '是否锁定 0=未锁定 1=已锁定不能为空', trigger: 'blur' }],
   userId: [{ required: true, message: '仓库主管不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
@@ -155,7 +155,7 @@ const resetForm = () => {
     address: undefined,
     sort: undefined,
     status: undefined,
-    lock: undefined,
+    locked: undefined,
     remark: undefined,
     userId: undefined,
   }
