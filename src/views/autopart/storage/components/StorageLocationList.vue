@@ -10,12 +10,14 @@
       <Icon icon="ep:plus" class="mr-5px" /> 新增
     </el-button>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="库位名字" align="center" prop="name" />
       <el-table-column label="库位编号" align="center" prop="num" />
-      <el-table-column label="库位容量(立方米)" align="center" prop="capacity" />
-      <el-table-column label="仓位主管ID" align="center" prop="userId" />
-      <el-table-column label="库位状态 0=关闭 1=开启" align="center" prop="status" />
+      <el-table-column label="库位容量(m³)" align="center" prop="capacity" />
+      <el-table-column label="库位状态" align="center" prop="status">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AUTOPART_STORAGE_LOCATION_STATUS" :value="scope.row.status" />
+        </template>
+      </el-table-column>
       <el-table-column label="排序序号" align="center" prop="sort" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
@@ -25,8 +27,6 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="创建者ID" align="center" prop="creatorId" />
-      <el-table-column label="更新者ID" align="center" prop="updaterId" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -63,6 +63,7 @@
 import { dateFormatter } from '@/utils/formatTime'
 import { StorageApi } from '@/api/autopart/storage'
 import StorageLocationForm from './StorageLocationForm.vue'
+import {DICT_TYPE} from "@/utils/dict";
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗

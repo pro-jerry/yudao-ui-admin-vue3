@@ -213,5 +213,6 @@ export enum DICT_TYPE {
 
   // ========== autopart   ==========
   AUTOPART_STORAGE_STATUS = 'autopart_storage_status',
+  AUTOPART_STORAGE_LOCATION_STATUS = 'autopart_storage_location_status',
   AUTOPART_STORAGE_LOCKED = 'autopart_storage_locked'
 }

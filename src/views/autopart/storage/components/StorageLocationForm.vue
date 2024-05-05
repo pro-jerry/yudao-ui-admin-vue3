@@ -13,15 +13,18 @@
       <el-form-item label="库位编号" prop="num">
         <el-input v-model="formData.num" placeholder="请输入库位编号" />
       </el-form-item>
-      <el-form-item label="库位容量(立方米)" prop="capacity">
-        <el-input v-model="formData.capacity" placeholder="请输入库位容量(立方米)" />
+      <el-form-item label="库位容量(m³)" prop="capacity">
+        <el-input v-model="formData.capacity" placeholder="请输入库位容量(m³)" />
       </el-form-item>
-      <el-form-item label="仓位主管ID" prop="userId">
-        <el-input v-model="formData.userId" placeholder="请输入仓位主管ID" />
-      </el-form-item>
-      <el-form-item label="库位状态 0=关闭 1=开启" prop="status">
+      <el-form-item label="库位状态" prop="status">
         <el-radio-group v-model="formData.status">
-          <el-radio label="1">请选择字典生成</el-radio>
+          <el-radio
+            v-for="dict in getIntDictOptions(DICT_TYPE.AUTOPART_STORAGE_LOCATION_STATUS)"
+            :key="dict.value"
+            :label="dict.value"
+          >
+            {{ dict.label }}
+          </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="排序序号" prop="sort">
@@ -29,12 +32,6 @@
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" placeholder="请输入备注" />
-      </el-form-item>
-      <el-form-item label="创建者ID" prop="creatorId">
-        <el-input v-model="formData.creatorId" placeholder="请输入创建者ID" />
-      </el-form-item>
-      <el-form-item label="更新者ID" prop="updaterId">
-        <el-input v-model="formData.updaterId" placeholder="请输入更新者ID" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -45,6 +42,7 @@
 </template>
 <script setup lang="ts">
 import { StorageApi } from '@/api/autopart/storage'
+import {DICT_TYPE, getIntDictOptions} from "@/utils/dict";
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -58,29 +56,26 @@ const formData = ref({
   storageId: undefined,
   num: undefined,
   capacity: undefined,
-  userId: undefined,
   status: undefined,
   sort: undefined,
   remark: undefined,
-  creatorId: undefined,
-  updaterId: undefined,
 })
 const formRules = reactive({
   name: [{ required: true, message: '库位名字不能为空', trigger: 'blur' }],
   storageId: [{ required: true, message: '仓库ID不能为空', trigger: 'blur' }],
   num: [{ required: true, message: '库位编号不能为空', trigger: 'blur' }],
-  userId: [{ required: true, message: '仓位主管ID不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '库位状态 0=关闭 1=开启不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number/*storageId: number*/) => {
+const open = async (type: string, id?: number,storageId: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  // formData.value.storageId = storageId
+  let storageId1 = storageId;
+  formData.value.storageId = storageId1
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
@@ -124,12 +119,9 @@ const resetForm = () => {
     storageId: undefined,
     num: undefined,
     capacity: undefined,
-    userId: undefined,
     status: undefined,
     sort: undefined,
     remark: undefined,
-    creatorId: undefined,
-    updaterId: undefined,
   }
   formRef.value?.resetFields()
 }
