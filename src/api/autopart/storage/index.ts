@@ -44,4 +44,29 @@ export const StorageApi = {
   exportStorage: async (params) => {
     return await request.download({ url: `/autopart/storage/export-excel`, params })
   },
-}
+  // ==================== 子表（仓库库位） ====================
+
+  // 获得仓库库位分页
+  getStorageLocationPage: async (params) => {
+    return await request.get({ url: `/autopart/storage/storage-location/page`, params })
+  },
+  // 新增仓库库位
+  createStorageLocation: async (data) => {
+    return await request.post({ url: `/autopart/storage/storage-location/create`, data })
+  },
+
+  // 修改仓库库位
+  updateStorageLocation: async (data) => {
+    return await request.put({ url: `/autopart/storage/storage-location/update`, data })
+  },
+
+  // 删除仓库库位
+  deleteStorageLocation: async (id: number) => {
+    return await request.delete({ url: `/autopart/storage/storage-location/delete?id=` + id })
+  },
+
+  // 获得仓库库位
+  getStorageLocation: async (id: number) => {
+    return await request.get({ url: `/autopart/storage/storage-location/get?id=` + id })
+  },
+}

@@ -91,7 +91,8 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
+              highlight-current-row @current-change="handleCurrentChange">
 <!--      <el-table-column label="ID" align="center" prop="id" />-->
       <el-table-column label="仓库名字" align="center" prop="name" />
       <el-table-column label="仓库编号" align="center" prop="num" />
@@ -150,6 +151,14 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <StorageForm ref="formRef" @success="getList" />
+  <!-- 子表的列表 -->
+  <ContentWrap>
+    <el-tabs model-value="storageLocation">
+      <el-tab-pane label="仓库库位" name="storageLocation">
+        <StorageLocationList :storage-id="currentRow.id" />
+      </el-tab-pane>
+    </el-tabs>
+  </ContentWrap>
 </template>
 
 <script setup lang="ts">
@@ -158,6 +167,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { StorageApi, StorageVO } from '@/api/autopart/storage'
 import StorageForm from './StorageForm.vue'
+import StorageLocationList from './components/StorageLocationList.vue'
 
 /** 汽配仓库 列表 */
 defineOptions({ name: 'Storage' })
@@ -236,6 +246,11 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+/** 选中行操作 */
+const currentRow = ref({}) // 选中行
+const handleCurrentChange = (row) => {
+  currentRow.value = row
 }
 
 /** 初始化 **/
