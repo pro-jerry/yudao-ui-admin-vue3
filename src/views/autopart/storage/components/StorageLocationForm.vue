@@ -8,13 +8,10 @@
       v-loading="formLoading"
     >
       <el-form-item label="库位名字" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入库位名字" />
-      </el-form-item>
-      <el-form-item label="库位编号" prop="num">
-        <el-input v-model="formData.num" placeholder="请输入库位编号" />
+        <el-input maxlength="100" v-model="formData.name" placeholder="请输入库位名字" />
       </el-form-item>
       <el-form-item label="库位容量(m³)" prop="capacity">
-        <el-input v-model="formData.capacity" placeholder="请输入库位容量(m³)" />
+        <el-input type="number" max="1000000" min="1" v-model="formData.capacity" placeholder="请输入库位容量(m³)" />
       </el-form-item>
       <el-form-item label="库位状态" prop="status">
         <el-radio-group v-model="formData.status">
@@ -28,10 +25,10 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="排序序号" prop="sort">
-        <el-input v-model="formData.sort" placeholder="请输入排序序号" />
+        <el-input type="number" max="10000" min="1" v-model="formData.sort" placeholder="请输入排序序号" />
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="formData.remark" placeholder="请输入备注" />
+        <el-input type="textarea" maxlength="1000" v-model="formData.remark" placeholder="请输入备注" />
       </el-form-item>
     </el-form>
     <template #footer>

@@ -8,11 +8,8 @@
       v-loading="formLoading"
     >
       <el-form-item label="仓库名字" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入仓库名字" />
+        <el-input maxlength="100" v-model="formData.name" placeholder="请输入仓库名字" />
       </el-form-item>
-<!--      <el-form-item label="仓库编号" prop="num">-->
-<!--        <el-input v-model="formData.num" placeholder="请输入仓库编号" />-->
-<!--      </el-form-item>-->
       <el-form-item label="库存容量(m³)" prop="capacity">
         <el-input type="number" max="10000" min="1" v-model="formData.capacity" placeholder="请输入库存容量" />
       </el-form-item>
@@ -23,7 +20,7 @@
         <el-input type="number" max="10000" min="1" v-model="formData.sort" placeholder="请输入排序序号" />
       </el-form-item>
       <el-form-item label="仓库状态" prop="status">
-        <el-radio-group v-model="formData.status">
+        <el-radio-group v-model="formData.status" @change="setLocked(formData)">
           <el-radio
             v-for="dict in getIntDictOptions(DICT_TYPE.AUTOPART_STORAGE_STATUS)"
             :key="dict.value"
@@ -34,15 +31,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="是否锁定" prop="locked">
-        <el-radio-group v-model="formData.locked">
-          <el-radio
-            v-for="dict in getIntDictOptions(DICT_TYPE.AUTOPART_STORAGE_LOCKED)"
-            :key="dict.value"
-            :label="dict.value"
-          >
-            {{ dict.label }}
-          </el-radio>
-        </el-radio-group>
+        <el-switch v-model="formData.locked" :active-value="1" :inactive-value="0" @change="enableLocked(formData)"/>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
         <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
@@ -73,6 +62,7 @@ import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { StorageApi, StorageVO } from '@/api/autopart/storage'
 import {getSimpleUserList} from "@/api/system/user";
 import * as UserApi from '@/api/system/user'
+import {async} from "vite-plugin-top-level-await";
 
 /** 汽配仓库 表单 */
 defineOptions({ name: 'StorageForm' })
@@ -87,7 +77,6 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   name: undefined,
-  // num: undefined,
   capacity: undefined,
   address: undefined,
   sort: undefined,
@@ -99,7 +88,6 @@ const formData = ref({
 const formRules = reactive({
   name: [{ required: true, message: '仓库名字不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '仓库状态 0=关闭 1=开启不能为空', trigger: 'blur' }],
-  locked: [{ required: true, message: '是否锁定 0=未锁定 1=已锁定不能为空', trigger: 'blur' }],
   userId: [{ required: true, message: '仓库主管不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
@@ -150,7 +138,6 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     name: undefined,
-    // num: undefined,
     capacity: undefined,
     address: undefined,
     sort: undefined,
@@ -161,6 +148,20 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
+
+const enableLocked = async(formData)=>{
+   if (formData.status == 0) {
+       formData.locked = 0
+       message.alertWarning(t('autopart.enableLockedSwitch'))
+   }
+}
+
+const setLocked = async(formData)=>{
+  if (formData.status == 0) {
+      formData.locked = 0
+  }
+}
+
 
 onMounted(async () => {
   // 获得用户列表

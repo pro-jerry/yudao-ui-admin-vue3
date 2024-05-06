@@ -8,19 +8,19 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="仓库名字" prop="name">
+      <el-form-item label="仓库编号" prop="num">
         <el-input
-          v-model="queryParams.name"
-          placeholder="请输入仓库名字"
+          v-model="queryParams.num"
+          placeholder="请输入仓库编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="仓库编号" prop="num">
+      <el-form-item label="仓库名字" prop="name">
         <el-input
-          v-model="queryParams.num"
-          placeholder="请输入仓库编号"
+          v-model="queryParams.name"
+          placeholder="请输入仓库名字"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -93,10 +93,10 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
               highlight-current-row @current-change="handleCurrentChange">
-<!--      <el-table-column label="ID" align="center" prop="id" />-->
-      <el-table-column label="仓库名字" align="center" prop="name" />
       <el-table-column label="仓库编号" align="center" prop="num" />
+      <el-table-column label="仓库名字" align="center" prop="name" />
       <el-table-column label="库存容量(m³)" align="center" prop="capacity" />
+      <el-table-column label="仓位数量" align="center" prop="storageLocationCount" />
       <el-table-column label="仓库地址" align="center" prop="address" />
       <el-table-column label="排序序号" align="center" prop="sort" />
       <el-table-column label="仓库状态" align="center" prop="status">
@@ -104,14 +104,12 @@
           <dict-tag :type="DICT_TYPE.AUTOPART_STORAGE_STATUS" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column label="是否锁定" align="center" prop="lock">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.AUTOPART_STORAGE_LOCKED" :value="scope.row.locked" />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="是否锁定" align="center" prop="lock">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.AUTOPART_STORAGE_LOCKED" :value="scope.row.locked" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="仓库主管" align="center" prop="userName" />
-      <el-table-column label="创建者" align="center" prop="creatorName" />
       <el-table-column
         label="创建时间"
         align="center"

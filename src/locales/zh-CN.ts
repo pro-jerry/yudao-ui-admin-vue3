@@ -1,4 +1,7 @@
 export default {
+  autopart: {
+    enableLockedSwitch: '仓库停用，不能使用锁定！',
+  },
   common: {
     inputText: '请输入',
     selectText: '请选择',

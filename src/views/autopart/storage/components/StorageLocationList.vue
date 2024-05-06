@@ -10,8 +10,8 @@
       <Icon icon="ep:plus" class="mr-5px" /> 新增
     </el-button>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="库位名字" align="center" prop="name" />
       <el-table-column label="库位编号" align="center" prop="num" />
+      <el-table-column label="库位名字" align="center" prop="name" />
       <el-table-column label="库位容量(m³)" align="center" prop="capacity" />
       <el-table-column label="库位状态" align="center" prop="status">
         <template #default="scope">
