@@ -2,6 +2,7 @@ import request from '@/config/axios'
 
 // 汽配仓库 VO
 export interface StorageVO {
+  id: number
   name: string // 仓库名字
   num: string // 仓库编号
   capacity: number // 库存容量(立方米)

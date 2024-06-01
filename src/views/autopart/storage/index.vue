@@ -50,9 +50,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="是否锁定" prop="lock">
+      <el-form-item label="是否锁定" prop="locked">
         <el-select
-          v-model="queryParams.lock"
+          v-model="queryParams.locked"
           placeholder="请选择是否锁定"
           clearable
           class="!w-240px"
@@ -91,8 +91,16 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
-              highlight-current-row @current-change="handleCurrentChange">
+    <el-table v-loading="loading"
+              :data="list"
+              :stripe="true"
+              :show-overflow-tooltip="true"
+              highlight-current-row
+              ref="multipleTableRef"
+              @selection-change="toggleSelection"
+              :show-checkbox="true"
+              @current-change="handleCurrentChange">
+      <el-table-column type="selection" width="55" />
       <el-table-column label="仓库编号" align="center" prop="num" />
       <el-table-column label="仓库名字" align="center" prop="name" />
       <el-table-column label="库存容量(m³)" align="center" prop="capacity" />
@@ -104,11 +112,11 @@
           <dict-tag :type="DICT_TYPE.AUTOPART_STORAGE_STATUS" :value="scope.row.status" />
         </template>
       </el-table-column>
-<!--      <el-table-column label="是否锁定" align="center" prop="lock">-->
-<!--        <template #default="scope">-->
-<!--          <dict-tag :type="DICT_TYPE.AUTOPART_STORAGE_LOCKED" :value="scope.row.locked" />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="锁定" align="center" prop="locked">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.AUTOPART_STORAGE_LOCKED" :value="scope.row.locked" />
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column
         label="创建时间"
@@ -160,12 +168,13 @@
 </template>
 
 <script setup lang="ts">
-import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter } from '@/utils/formatTime'
+import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { StorageApi, StorageVO } from '@/api/autopart/storage'
+import {StorageApi, StorageVO} from '@/api/autopart/storage'
 import StorageForm from './StorageForm.vue'
 import StorageLocationList from './components/StorageLocationList.vue'
+import {ElTable} from "element-plus";
 
 /** 汽配仓库 列表 */
 defineOptions({ name: 'Storage' })
@@ -176,6 +185,7 @@ const { t } = useI18n() // 国际化
 const loading = ref(true) // 列表的加载中
 const list = ref<StorageVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
+const multipleTableRef = ref<InstanceType<typeof ElTable>>()
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -183,7 +193,7 @@ const queryParams = reactive({
   num: undefined,
   capacity: undefined,
   status: undefined,
-  lock: undefined,
+  locked: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -247,8 +257,15 @@ const handleExport = async () => {
 }
 /** 选中行操作 */
 const currentRow = ref({}) // 选中行
+
+const checkList=ref<StorageVO[]>([])
 const handleCurrentChange = (row) => {
   currentRow.value = row
+}
+
+const toggleSelection = (val) => {
+  checkList.value = val
+  console.log('选中的数据：', checkList.value)
 }
 
 /** 初始化 **/
