@@ -2,17 +2,20 @@ import request from '@/config/axios'
 
 // 地区 VO
 export interface CityVO {
+  id: number // ID
   regionId: string // 区号
   regionName: string // 省市区的名字
   regionParentId: string // 上级的区号
   regionLevel: number // 0中国 1省 2市 3区
+  creatorId: number // 创建者ID
+  updaterId: number // 更新者ID
 }
 
 // 地区 API
 export const CityApi = {
-  // 查询地区列表
-  getCityList: async (params) => {
-    return await request.get({ url: `/system/city/list`, params })
+  // 查询地区分页
+  getCityPage: async (params: any) => {
+    return await request.get({ url: `/system/city/page`, params })
   },
 
   // 查询地区详情

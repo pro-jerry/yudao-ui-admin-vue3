@@ -35,6 +35,35 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="创建者ID" prop="creatorId">
+        <el-input
+          v-model="queryParams.creatorId"
+          placeholder="请输入创建者ID"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="daterange"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="更新者ID" prop="updaterId">
+        <el-input
+          v-model="queryParams.updaterId"
+          placeholder="请输入更新者ID"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -55,27 +84,26 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
-        <el-button type="danger" plain @click="toggleExpandAll">
-          <Icon icon="ep:sort" class="mr-5px" /> 展开/折叠
-        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table
-      v-loading="loading"
-      :data="list"
-      :stripe="true"
-      :show-overflow-tooltip="true"
-      row-key="id"
-      :default-expand-all="isExpandAll"
-      v-if="refreshTable"
-    >
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+      <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="区号" align="center" prop="regionId" />
       <el-table-column label="省市区的名字" align="center" prop="regionName" />
       <el-table-column label="上级的区号" align="center" prop="regionParentId" />
+      <el-table-column label="创建者ID" align="center" prop="creatorId" />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      <el-table-column label="更新者ID" align="center" prop="updaterId" />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button
@@ -111,7 +139,7 @@
 </template>
 
 <script setup lang="ts">
-import {handleTree} from '@/utils/tree'
+import {dateFormatter} from '@/utils/formatTime'
 import download from '@/utils/download'
 import {CityApi, CityVO} from '@/api/system/city'
 import CityForm from './CityForm.vue'
@@ -124,10 +152,16 @@ const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const list = ref<CityVO[]>([]) // 列表的数据
+const total = ref(0) // 列表的总页数
 const queryParams = reactive({
+  pageNo: 1,
+  pageSize: 10,
   regionId: undefined,
   regionName: undefined,
   regionParentId: undefined,
+  creatorId: undefined,
+  createTime: [],
+  updaterId: undefined,
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -136,8 +170,9 @@ const exportLoading = ref(false) // 导出的加载中
 const getList = async () => {
   loading.value = true
   try {
-    const data = await CityApi.getCityList(queryParams)
-    list.value = handleTree(data, 'id', 'regionId')
+    const data = await CityApi.getCityPage(queryParams)
+    list.value = data.list
+    total.value = data.total
   } finally {
     loading.value = false
   }
@@ -187,16 +222,6 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
-}
-
-/** 展开/折叠操作 */
-const isExpandAll = ref(true) // 是否展开，默认全部展开
-const refreshTable = ref(true) // 重新渲染表格状态
-const toggleExpandAll = async () => {
-  refreshTable.value = false
-  isExpandAll.value = !isExpandAll.value
-  await nextTick()
-  refreshTable.value = true
 }
 
 /** 初始化 **/

@@ -8,14 +8,7 @@
       v-loading="formLoading"
     >
       <el-form-item label="区号" prop="regionId">
-        <el-tree-select
-          v-model="formData.regionId"
-          :data="cityTree"
-          :props="{...defaultProps, label: 'regionName'}"
-          check-strictly
-          default-expand-all
-          placeholder="请选择区号"
-        />
+        <el-input v-model="formData.regionId" placeholder="请输入区号" />
       </el-form-item>
       <el-form-item label="省市区的名字" prop="regionName">
         <el-input v-model="formData.regionName" placeholder="请输入省市区的名字" />
@@ -26,6 +19,12 @@
       <el-form-item label="0中国 1省 2市 3区" prop="regionLevel">
         <el-input v-model="formData.regionLevel" placeholder="请输入0中国 1省 2市 3区" />
       </el-form-item>
+      <el-form-item label="创建者ID" prop="creatorId">
+        <el-input v-model="formData.creatorId" placeholder="请输入创建者ID" />
+      </el-form-item>
+      <el-form-item label="更新者ID" prop="updaterId">
+        <el-input v-model="formData.updaterId" placeholder="请输入更新者ID" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
@@ -35,7 +34,6 @@
 </template>
 <script setup lang="ts">
 import {CityApi, CityVO} from '@/api/system/city'
-import {defaultProps, handleTree} from '@/utils/tree'
 
 /** 地区 表单 */
 defineOptions({ name: 'CityForm' })
@@ -48,10 +46,13 @@ const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
+  id: undefined,
   regionId: undefined,
   regionName: undefined,
   regionParentId: undefined,
   regionLevel: undefined,
+  creatorId: undefined,
+  updaterId: undefined,
 })
 const formRules = reactive({
   regionId: [{ required: true, message: '区号不能为空', trigger: 'blur' }],
@@ -60,7 +61,6 @@ const formRules = reactive({
   regionLevel: [{ required: true, message: '0中国 1省 2市 3区不能为空', trigger: 'blur' }],
 })
 const formRef = ref() // 表单 Ref
-const cityTree = ref() // 树形结构
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -77,7 +77,6 @@ const open = async (type: string, id?: number) => {
       formLoading.value = false
     }
   }
-  await getCityTree()
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
@@ -108,20 +107,14 @@ const submitForm = async () => {
 /** 重置表单 */
 const resetForm = () => {
   formData.value = {
+    id: undefined,
     regionId: undefined,
     regionName: undefined,
     regionParentId: undefined,
     regionLevel: undefined,
+    creatorId: undefined,
+    updaterId: undefined,
   }
   formRef.value?.resetFields()
-}
-
-/** 获得地区树 */
-const getCityTree = async () => {
-  cityTree.value = []
-  const data = await CityApi.getCityList()
-  const root: Tree = { id: 0, name: '顶级地区', children: [] }
-  root.children = handleTree(data, 'id', 'regionId')
-  cityTree.value.push(root)
 }
 </script>
